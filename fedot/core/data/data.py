@@ -6,8 +6,7 @@ from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-
-from fedot.utilities.requirements_notificator import warn_requirement
+from golem.utilities.requirements_notificator import warn_requirement
 
 try:
     import cv2

@@ -2,6 +2,7 @@ from copy import deepcopy
 
 import numpy as np
 import pytest
+from golem.core.log import default_log
 from sklearn.datasets import make_classification
 from sklearn.metrics import mean_absolute_error, mean_squared_error, roc_auc_score as roc_auc
 from sklearn.preprocessing import MinMaxScaler
@@ -9,7 +10,6 @@ from sklearn.preprocessing import MinMaxScaler
 from fedot.core.data.data import InputData, OutputData
 from fedot.core.data.data_split import train_test_data_setup
 from fedot.core.data.supplementary_data import SupplementaryData
-from fedot.core.log import default_log
 from fedot.core.operations.evaluation.operation_implementations.data_operations.sklearn_transformations import \
     PCAImplementation
 from fedot.core.operations.evaluation.operation_implementations.models.discriminant_analysis import \
@@ -19,8 +19,8 @@ from fedot.core.operations.evaluation.operation_implementations.models.ts_implem
 from fedot.core.operations.evaluation.operation_implementations.models.ts_implementations.statsmodels import \
     GLMImplementation
 from fedot.core.operations.model import Model
-from fedot.core.pipelines.node import PrimaryNode, SecondaryNode
 from fedot.core.operations.operation_parameters import get_default_params, OperationParameters
+from fedot.core.pipelines.node import PrimaryNode, SecondaryNode
 from fedot.core.pipelines.pipeline import Pipeline
 from fedot.core.repository.dataset_types import DataTypesEnum
 from fedot.core.repository.operation_types_repository import OperationTypesRepository

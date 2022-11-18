@@ -52,7 +52,7 @@ class PipelineSensitivityAnalysis:
                                             approaches=nodes_analyze_approaches,
                                             requirements=requirements,
                                             nodes_to_analyze=nodes_to_analyze,
-                                            path_to_save=path_to_save, log=log)
+                                            path_to_save=path_to_save, log=self.log)
 
         self._pipeline_analyze = PipelineAnalysis(pipeline=pipeline,
                                                   train_data=train_data,
@@ -60,7 +60,7 @@ class PipelineSensitivityAnalysis:
                                                   approaches=pipeline_analyze_approaches,
                                                   requirements=requirements,
                                                   path_to_save=path_to_save,
-                                                  log=log)
+                                                  log=self.log)
 
     def analyze(self):
         """Applies defined sensitivity analysis approaches

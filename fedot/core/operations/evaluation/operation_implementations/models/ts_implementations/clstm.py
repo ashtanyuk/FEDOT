@@ -1,6 +1,7 @@
 from copy import copy
 
 import numpy as np
+from golem.utilities.requirements_notificator import warn_requirement
 from sklearn.preprocessing import StandardScaler
 
 from fedot.core.data.data import InputData
@@ -12,7 +13,6 @@ from fedot.core.operations.evaluation.operation_implementations.implementation_i
 from fedot.core.operations.operation_parameters import OperationParameters
 from fedot.core.pipelines.ts_wrappers import _update_input, exception_if_not_ts_task
 from fedot.core.repository.dataset_types import DataTypesEnum
-from fedot.utilities.requirements_notificator import warn_requirement
 
 
 class TorchMock:

@@ -1,15 +1,14 @@
 import datetime
 
 import pytest
-
-from fedot.core.pipelines.adapters import PipelineAdapter
-from fedot.core.optimisers.fitness import Fitness, null_fitness
-from fedot.core.optimisers.gp_comp.evaluation import MultiprocessingDispatcher, SimpleDispatcher, \
+from golem.core.optimisers.fitness import Fitness, null_fitness
+from golem.core.optimisers.genetic.evaluation import MultiprocessingDispatcher, SimpleDispatcher, \
     ObjectiveEvaluationDispatcher
-from fedot.core.optimisers.objective import Objective
+from golem.core.optimisers.opt_history_objects.individual import Individual
+from golem.core.optimisers.timer import OptimisationTimer
+
 from fedot.core.optimisers.objective.metrics_objective import MetricsObjective
-from fedot.core.optimisers.opt_history_objects.individual import Individual
-from fedot.core.optimisers.timer import OptimisationTimer
+from fedot.core.pipelines.adapters import PipelineAdapter
 from fedot.core.pipelines.pipeline import Pipeline
 from fedot.core.repository.quality_metrics_repository import ClassificationMetricsEnum
 from test.unit.pipelines.test_node_cache import pipeline_first, pipeline_second, pipeline_third, pipeline_fourth

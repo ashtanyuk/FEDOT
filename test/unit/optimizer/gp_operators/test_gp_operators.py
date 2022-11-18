@@ -3,26 +3,26 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Sequence, Optional
 
-from fedot.core.dag.graph_utils import nodes_from_layer
-from fedot.core.dag.verification_rules import DEFAULT_DAG_RULES
+from golem.core.dag.graph_utils import nodes_from_layer
+from golem.core.dag.verification_rules import DEFAULT_DAG_RULES
+from golem.core.optimisers.archive import ParetoFront
+from golem.core.optimisers.fitness.multi_objective_fitness import MultiObjFitness
+from golem.core.optimisers.genetic.evaluation import MultiprocessingDispatcher
+from golem.core.optimisers.genetic.gp_operators import filter_duplicates, replace_subtrees
+from golem.core.optimisers.genetic.gp_params import GPGraphOptimizerParameters
+from golem.core.optimisers.genetic.operators.mutation import MutationTypesEnum, Mutation, MutationStrengthEnum
+from golem.core.optimisers.genetic.pipeline_composer_requirements import PipelineComposerRequirements
+from golem.core.optimisers.graph import OptGraph, OptNode
+from golem.core.optimisers.opt_history_objects.individual import Individual
+from golem.core.optimisers.timer import OptimisationTimer
+
 from fedot.core.data.data import InputData
-from fedot.core.pipelines.adapters import PipelineAdapter
-from fedot.core.optimisers.archive import ParetoFront
-from fedot.core.optimisers.fitness.multi_objective_fitness import MultiObjFitness
-from fedot.core.optimisers.gp_comp.evaluation import MultiprocessingDispatcher
-from fedot.core.optimisers.gp_comp.gp_operators import filter_duplicates, replace_subtrees
-from fedot.core.optimisers.gp_comp.gp_params import GPGraphOptimizerParameters
-from fedot.core.optimisers.gp_comp.operators.mutation import MutationTypesEnum, Mutation, MutationStrengthEnum
-from fedot.core.optimisers.gp_comp.pipeline_composer_requirements import PipelineComposerRequirements
-from fedot.core.optimisers.graph import OptGraph, OptNode
 from fedot.core.optimisers.objective import PipelineObjectiveEvaluate
 from fedot.core.optimisers.objective.data_source_splitter import DataSourceSplitter
 from fedot.core.optimisers.objective.metrics_objective import MetricsObjective
-from fedot.core.optimisers.opt_history_objects.individual import Individual
-from fedot.core.optimisers.timer import OptimisationTimer
+from fedot.core.pipelines.adapters import PipelineAdapter
 from fedot.core.pipelines.node import PrimaryNode, SecondaryNode
 from fedot.core.pipelines.pipeline import Pipeline
-from fedot.core.pipelines.pipeline_builder import PipelineBuilder
 from fedot.core.pipelines.pipeline_graph_generation_params import get_pipeline_generation_params
 from fedot.core.repository.operation_types_repository import get_operations_for_task
 from fedot.core.repository.quality_metrics_repository import ClassificationMetricsEnum
