@@ -22,7 +22,7 @@ from fedot.core.pipelines.node import Node, PrimaryNode, SecondaryNode
 from fedot.core.pipelines.template import PipelineTemplate
 from fedot.core.repository.tasks import TaskTypesEnum
 from fedot.core.utilities.serializable import Serializable
-from fedot.core.utils import copy_doc
+from golem.core.paths import copy_doc
 from fedot.core.visualisation.graph_viz import NodeColorType
 from fedot.core.visualisation.pipeline_specific_visuals import PipelineVisualizer
 from fedot.preprocessing.preprocessing import DataPreprocessor, update_indices_for_time_series
