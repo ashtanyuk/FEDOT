@@ -1,9 +1,10 @@
 from typing import List, Optional, TYPE_CHECKING, Union
 
+from golem.core.utilities.data_structures import ensure_wrapped_in_sequence
+
 from fedot.core.caching.base_cache import BaseCache
 from fedot.core.caching.pipelines_cache_db import OperationsCacheDB
 from fedot.core.pipelines.node import Node
-from fedot.core.utilities.data_structures import ensure_wrapped_in_sequence
 from fedot.utilities.debug import is_test_session
 
 if TYPE_CHECKING:

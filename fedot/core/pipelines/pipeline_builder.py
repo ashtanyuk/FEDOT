@@ -1,7 +1,8 @@
 from copy import deepcopy
 from typing import List, Union, Optional, Tuple, Dict
 
-from fedot.core.dag.linked_graph import LinkedGraph
+from golem.core.dag.linked_graph import LinkedGraph
+
 from fedot.core.pipelines.node import Node, PrimaryNode, SecondaryNode
 from fedot.core.pipelines.pipeline import Pipeline
 

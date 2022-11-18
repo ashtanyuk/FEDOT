@@ -3,6 +3,7 @@ from typing import Dict, List, Union
 
 import numpy as np
 import pandas as pd
+from golem.core.log import default_log
 from sklearn.preprocessing import LabelEncoder
 
 from fedot.core.data.data import InputData, OutputData, data_type_is_table, data_type_is_ts, data_type_is_text
@@ -14,7 +15,6 @@ from fedot.core.data.data_preprocessing import (
     replace_nans_with_empty_strings
 )
 from fedot.core.data.multi_modal import MultiModalData
-from fedot.core.log import default_log
 from fedot.core.operations.evaluation.operation_implementations.data_operations.categorical_encoders import (
     LabelEncodingImplementation,
     OneHotEncodingImplementation
@@ -25,9 +25,10 @@ from fedot.core.operations.evaluation.operation_implementations.data_operations.
 from fedot.core.repository.dataset_types import DataTypesEnum
 from fedot.core.repository.tasks import TaskTypesEnum
 from fedot.preprocessing.categorical import BinaryCategoricalPreprocessor
-from fedot.preprocessing.data_types import NAME_CLASS_INT, TableTypesCorrector
 from fedot.preprocessing.data_type_check import exclude_ts, exclude_multi_ts, exclude_image
+from fedot.preprocessing.data_types import NAME_CLASS_INT, TableTypesCorrector
 from fedot.preprocessing.structure import DEFAULT_SOURCE_NAME, PipelineStructureExplorer
+
 # The allowed percent of empty samples in features.
 # Example: 90% objects in features are 'nan', then drop this feature from data.
 ALLOWED_NAN_PERCENT = 0.9
