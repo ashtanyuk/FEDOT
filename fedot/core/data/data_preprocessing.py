@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from fedot.core.data.data import InputData, data_type_is_table, data_type_is_ts, data_type_is_multi_ts
+from fedot.core.data.data import InputData, data_type_is_multi_ts, data_type_is_table, data_type_is_ts
 from fedot.core.repository.dataset_types import DataTypesEnum
 
 
@@ -12,7 +12,7 @@ def data_type_is_suitable_preprocessing(data: InputData) -> bool:
 
 
 def replace_inf_with_nans(input_data: InputData):
-    values_to_replace = [np.inf, -np.inf]
+    values_to_replace = [np.inf, -np.inf]  # , 'nan']
     features_with_replaced_inf = np.where(np.isin(input_data.features,
                                                   values_to_replace),
                                           np.nan,

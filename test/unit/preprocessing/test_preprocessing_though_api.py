@@ -1,4 +1,8 @@
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 from fedot.api.main import Fedot
 from fedot.core.data.data import InputData
@@ -6,6 +10,7 @@ from fedot.core.data.data_split import train_test_data_setup
 from fedot.core.data.supplementary_data import SupplementaryData
 from fedot.core.repository.dataset_types import DataTypesEnum
 from fedot.core.repository.tasks import Task, TaskTypesEnum
+from fedot.core.utils import fedot_project_root
 from fedot.preprocessing.data_types import NAME_CLASS_STR
 
 
@@ -18,7 +23,28 @@ def data_with_only_categorical_features():
                          ["'c'", "1", "0"]], dtype=object)
     input_data = InputData(idx=[0, 1, 2], features=features,
                            target=np.array([0, 1, 2]),
-                           task=task,  data_type=DataTypesEnum.table,
+                           task=task, data_type=DataTypesEnum.table,
+                           supplementary_data=supp_data)
+
+    return input_data
+
+
+def data_with_categorical_features_and_nans():
+    """ Generate tabular data with only categorical features. All of them are binary. """
+    supp_data = SupplementaryData(column_types={'features': [NAME_CLASS_STR] * 3})
+    task = Task(TaskTypesEnum.regression)
+    features = np.array([["'a'", "0", "1"],
+                         ['nan', "1", "0"],
+                         ["'c'", "1", "0"],
+                         ["'a'", "0", "1"],
+                         ['nan', "1", "0"],
+                         ["'c'", "1", "0"],
+                         ["'a'", "0", "1"],
+                         ["'c'", "1", "0"],
+                         ["'c'", "1", "0"]])
+    input_data = InputData(idx=[0, 1, 2, 3, 4, 5, 6, 7, 8], features=features,
+                           target=np.array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+                           task=task, data_type=DataTypesEnum.table,
                            supplementary_data=supp_data)
 
     return input_data
@@ -29,19 +55,26 @@ def data_with_too_much_nans():
     Columns with ids 1 and 2 have nans more than 90% in their structure.
     """
     task = Task(TaskTypesEnum.regression)
-    features = np.array([[1, np.inf, np.nan],
-                         [np.nan, np.inf, np.nan],
-                         [3, np.inf, np.nan],
-                         [7, np.inf, np.nan],
-                         [8, np.nan, np.nan],
-                         [np.nan, np.nan, 23],
-                         [9, np.inf, np.nan],
-                         [9, np.inf, np.nan],
-                         [9, np.inf, np.nan],
-                         [9, '1', np.inf],
-                         [8, np.nan, np.inf]], dtype=object)
-    target = np.array([[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10]])
-    train_input = InputData(idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], features=features,
+    features = np.array([[1, np.inf, 8],
+                         [2, np.inf, 10],
+                         [3, np.inf, 11],
+                         [14, np.inf, 11],
+                         [13, np.inf, 11],
+                         [63, np.inf, 11],
+                         ['nan', np.inf, 11],
+                         [81, np.inf, 11],
+                         [7, np.inf, 14],
+                         [8, np.nan, 15],
+                         ['nan', np.nan, 23],
+                         [19, np.inf, 6],
+                         [29, np.inf, 4],
+                         [39, np.inf, np.nan],
+                         [49, '1', np.inf],
+                         [99, '1', np.inf],
+                         [8, np.nan, np.inf]])
+    target = np.array([[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10],
+                       [11], [12], [13], [14], [15], [16]])
+    train_input = InputData(idx=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], features=features,
                             target=target, task=task, data_type=DataTypesEnum.table,
                             supplementary_data=SupplementaryData(was_preprocessed=False))
 
@@ -182,21 +215,37 @@ def data_with_text_features_and_nans():
                             supplementary_data=SupplementaryData(was_preprocessed=False))
 
     return train_input
+
+
 # TODO: @andreygetmanov (test data with image features)
+
+def real_regression_data():
+    data_frame = pd.read_csv(Path(fedot_project_root(), 'test/data/used_car.csv'),
+                             sep=';')
+
+    train_data, test_data = train_test_split(data_frame.values,
+                                             test_size=0.1,
+                                             random_state=42)
+    train_data, test_data = pd.DataFrame(train_data), pd.DataFrame(test_data)
+    return train_data, test_data
 
 
 def test_correct_api_dataset_preprocessing():
     """ Check if dataset preprocessing was performed correctly when API launch using. """
-    funcs = [data_with_only_categorical_features, data_with_too_much_nans,
-             data_with_spaces_and_nans_in_features, data_with_nans_in_target_column,
-             data_with_nans_in_multi_target]
+    funcs = [real_regression_data]
 
     # Check for all datasets
     for data_generator in funcs:
-        input_data = data_generator()
+        data = data_generator()
+        if isinstance(data, tuple):
+            train_data, test_data = data
+        else:
+            train_data, test_data = data, data
         fedot_model = Fedot(problem='regression')
-        pipeline = fedot_model.fit(input_data, predefined_model='auto')
+        pipeline = fedot_model.fit(train_data, predefined_model='auto')
+        predict = fedot_model.predict(test_data)
         assert pipeline is not None
+        assert predict is not None
 
 
 def test_categorical_target_processed_correctly():
