@@ -317,10 +317,18 @@ class DataPreprocessor:
         """ Remove extra spaces from data.
             Transform cells in columns from ' x ' to 'x'
         """
-        features = pd.DataFrame(data.features)
-        features = features.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+        def strip_all_strs(item: Union[object, str]):
+            try:
+                return item.strip()
+            except AttributeError:
+                # not an str object
+                return item
 
-        data.features = np.array(features)
+        features_df = pd.DataFrame(data.features)
+        mixed_or_str = features_df.select_dtypes(object)
+        features_df[mixed_or_str.columns] = mixed_or_str.applymap(strip_all_strs)
+
+        data.features = features_df.to_numpy()
         return data
 
     def label_encoding_for_fit(self, data: InputData, source_name: str = DEFAULT_SOURCE_NAME):
