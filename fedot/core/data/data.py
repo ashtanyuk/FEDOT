@@ -28,11 +28,11 @@ class Data:
     Base Data type class
     """
 
-    idx: np.array
+    idx: np.ndarray
     task: Task
     data_type: DataTypesEnum
-    features: np.array
-    target: Optional[np.array] = None
+    features: np.ndarray
+    target: Optional[np.ndarray] = None
 
     # Object with supplementary info
     supplementary_data: SupplementaryData = field(default_factory=SupplementaryData)
