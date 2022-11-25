@@ -1,9 +1,10 @@
 from copy import deepcopy
-import numpy as np
-import pandas as pd
 from typing import Tuple
 
+import numpy as np
+import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+
 from fedot.core.data.data import InputData
 from fedot.core.data.data_preprocessing import find_categorical_columns
 from fedot.preprocessing.data_types import NAME_CLASS_INT, FEDOT_STR_NAN
