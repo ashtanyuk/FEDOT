@@ -1,7 +1,8 @@
 from copy import deepcopy
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
+import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 
 from fedot.core.data.data import InputData, OutputData
@@ -82,7 +83,7 @@ class OneHotEncodingImplementation(DataOperationImplementation):
 
             output_data.supplementary_data.column_types['features'] = numerical_columns
 
-    def _apply_one_hot_encoding(self, features: np.array) -> np.array:
+    def _apply_one_hot_encoding(self, features: np.ndarray) -> np.ndarray:
         """
         The method creates a table based on categorical and real features after One Hot Encoding transformation
 
@@ -135,10 +136,7 @@ class LabelEncodingImplementation(DataOperationImplementation):
             # If categorical features are exists - transform them inplace in InputData
             for categorical_id in self.categorical_ids:
                 categorical_column = input_data.features[:, categorical_id]
-
-                # Converting into string - so nans becomes marked as 'nan'
-                categorical_column = categorical_column.astype(str)
-                gap_ids = np.ravel(np.argwhere(categorical_column == 'nan'))
+                gap_ids = pd.isna(categorical_column)
 
                 transformed = self._apply_label_encoder(categorical_column, categorical_id, gap_ids)
                 copied_data.features[:, categorical_id] = transformed
@@ -168,8 +166,8 @@ class LabelEncodingImplementation(DataOperationImplementation):
 
             self.encoders.update({categorical_id: le})
 
-    def _apply_label_encoder(self, categorical_column: np.array, categorical_id: int,
-                             gap_ids: Union[np.array, None]) -> np.array:
+    def _apply_label_encoder(self, categorical_column: np.ndarray, categorical_id: int,
+                             gap_ids: np.ndarray) -> np.ndarray:
         """ Apply fitted LabelEncoder for column transformation
 
         :param categorical_column: numpy array with categorical features
@@ -177,15 +175,7 @@ class LabelEncodingImplementation(DataOperationImplementation):
         :param gap_ids: indices of gap elements in array
         """
         column_encoder = self.encoders[categorical_id]
-        encoder_classes = list(column_encoder.classes_)
-
-        # If the column contains categories not previously encountered
-        for label in list(set(categorical_column)):
-            if label not in encoder_classes:
-                encoder_classes.append(label)
-
-        # Extent encoder classes
-        column_encoder.classes_ = encoder_classes
+        column_encoder.classes_ = np.unique(np.concatenate((column_encoder.classes_, categorical_column)))
 
         transformed_column = column_encoder.transform(categorical_column)
         if len(gap_ids) > 0:
